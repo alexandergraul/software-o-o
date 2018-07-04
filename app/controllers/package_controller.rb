@@ -25,10 +25,12 @@ class PackageController < OBSController
                          @packages.find { |p| default_release_projects.include?(p.project) }
 
       pkg_appdata = @appdata[:apps].find { |app| app[:pkgname].casecmp(@pkgname).zero? }
+      @default_repo = @distributions.find {|d| d[:project] == @baseproject }[:repository]
       if pkg_appdata
         @name = pkg_appdata[:name]
         @appcategories = pkg_appdata[:categories]
         @homepage = pkg_appdata[:homepage]
+        @appid = pkg_appdata.first[:id]
       end
 
       @screenshot = url_for controller: :package, action: :screenshot, package: @pkgname, protocol: request.protocol

@@ -28,6 +28,7 @@ class Appdata
       appdata[:categories] = app.xpath('categories/category').map(&:text).reject { |c| c.match(/^X-/) }.uniq
       appdata[:homepage] = app.xpath('url').text
       appdata[:screenshots] = app.xpath('screenshots/screenshot/image').map(&:text)
+      appdata[:id] = app.xpath('id').text
       data[:apps] << appdata
     end
     data[:categories] += xml.xpath('/components/component/categories/category')
