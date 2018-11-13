@@ -148,6 +148,8 @@ module OBS
   # @option opts [String] :exclude_filter Exclude packages containing this term
   #
   def self.search_published_binary(query, opts = {})
+    cache_key = ActiveSupport::Cache.expand_cache_key([query, opts])
+    Rails.cache.fetch(cache_key, expires_in: 2.hours) do
       result = OBS.client.get('/search/published/binary/id', match: xpath_for(query, opts)).body.collection
       return [] if result.binaries.nil?
 
@@ -156,6 +158,7 @@ module OBS
       result.binaries.map! { |bin| OBS.add_binary_relevance(bin, query) }
 
       result.binaries.sort { |a, b| b.relevance <=> a.relevance }
+    end
   end
 
   # Add relevance for sorting of binaries
