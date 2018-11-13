@@ -14,9 +14,9 @@ class PackageController < OBSController
       @search_term = params[:search_term]
       @base_appdata_project = "openSUSE:Factory"
 
-      @packages = Seeker.prepare_result("\"#{@pkgname}\"", nil, nil, nil, nil)
+      @packages = OBS.search_published_binary("\"#{@pkgname}\"")
       # only show rpms
-      @packages = @packages.select { |p| p.first.type != 'ymp' && p.quality != "Private" }
+      @packages.select! { |p| p.type != 'ymp' && p.quality != "Private" }
       @default_project = @baseproject
       @default_project_name = @distributions.select { |d| d[:project] == @default_project }.first[:name]
       @default_repo = @distributions.select { |d| d[:project] == @default_project }.first[:repository]
