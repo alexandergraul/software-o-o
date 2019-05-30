@@ -44,11 +44,14 @@ the stability, functionality, or testability of this application will generally
 not be accepted (we share the same [rationales as the Rails
 project](https://github.com/rails/rails/pull/13771#issuecomment-32746700)).
 
-If you are not going to fix all issues of a certain type on all files, but just on a subset, you can as well disable the ignore in '.rubocop_todo.yml' locally, fix the issues in a few files, and commit those, without committing '.rubocop_todo.yml', so that it keeps ignoring the files that still have the issue.
+## Do you want to improve translations?
 
-If you fix rubocop issues like the ones above, you can submit it with a GitHub pull request.
+This project is translated into many languages via openSUSE's
+[weblate](https://l10n.opensuse.org/projects/software-o-o/master) application.
 
-Other changes that are cosmetic in nature and do not add anything substantial to the stability, functionality, or testability of this application will generally not be accepted (we share the same [rationales as the Rails project](https://github.com/rails/rails/pull/13771#issuecomment-32746700)).
+Check out openSUSE's [Localization
+guide](https://en.opensuse.org/openSUSE:Localization_guide) to learn more about
+the translation process.
 
 ## Do you intend to add a new feature or change an existing one?
 
