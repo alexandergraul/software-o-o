@@ -133,10 +133,16 @@ class ApplicationController < ActionController::Base
     name =~ /^[[:alnum:]][-+\w.:]+$/
   end
 
-  # TODO: atm obs only offers appdata for Factory
   def prepare_appdata
-    @appdata = Rails.cache.fetch('appdata', expires_in: 12.hours) do
-      Appdata.get 'factory'
+    return unless @baseproject
+
+    project = @baseproject.gsub(/openSUSE:/, '').downcase
+    @appdata = Rails.cache.fetch("appdata/#{project}", expires_in: 12.hours) do
+      if ['factory', 'leap:15.0', 'leap:15.1'].include? project
+        Appdata.get(project)
+      else
+        { apps: [] }
+      end
     end
   end
 

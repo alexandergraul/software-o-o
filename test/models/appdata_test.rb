@@ -20,9 +20,21 @@ class AppdataTest < ActiveSupport::TestCase
       stub_request(:get, %r{https://download.opensuse.org/tumbleweed/repo/oss/repodata/(.*)-appdata.xml.gz})
         .to_return(status: 404, body: '', headers: {})
       appdata = Appdata.get('factory')
-      # Should at least include the standard searches
+      # Should still include non-oss appdata
       assert_not_empty appdata[:apps]
       assert_includes appdata[:apps].map { |e| e[:name] }, 'Opera'
+    end
+  end
+
+  test 'Leap 15.1 Appdata can be parsed' do
+    VCR.use_cassette('default') do
+      appdata = Appdata.get('leap15.1')
+      pkg_list = appdata[:apps].map { |p| p[:pkgname] }.uniq
+
+      assert_equal 631, pkg_list.size
+      ['0ad', '4pane', 'steam'].each do |pkg|
+        assert_includes pkg_list, pkg
+      end
     end
   end
 end

@@ -17,10 +17,10 @@ class Appdata
   private
 
   def self.add_appdata(data, xml)
-    data[:apps] = [] unless data[:apps]
-    data[:categories] = [] unless data[:categories]
-    xml.xpath('/components/component').each do |app|
-      appdata = {}
+    data[:apps] ||= Array.new
+    data[:categories] ||= Array.new
+    xml.xpath("/components/component").each do |app|
+      appdata = Hash.new
       # Filter translated versions of name and summary out
       appdata[:name] = app.xpath('name[not(@xml:lang)]').text
       appdata[:summary] = app.xpath('summary[not(@xml:lang)]').text
@@ -37,17 +37,20 @@ class Appdata
   end
 
   # Get the appdata xml for a distribution
-  def self.get_distribution(dist = 'factory', flavour = 'oss')
-    appdata_url = case dist
-                  when 'factory'
-                    index_url = "https://download.opensuse.org/tumbleweed/repo/#{flavour}/repodata/repomd.xml"
-                    repomd = Nokogiri::XML(open(index_url))
-                    repomd.remove_namespaces!
-                    href = repomd.xpath('/repomd/data[@type="appdata"]/location').attr('href').text
-                    "https://download.opensuse.org/tumbleweed/repo/#{flavour}/#{href}"
-                  else
-                    "https://download.opensuse.org/distribution/#{dist}/repo/#{flavour}/suse/setup/descr/appdata.xml.gz"
-                  end
+  def self.get_distribution(distribution, flavour)
+    if distribution == 'factory'
+      baseurl = "https://download.opensuse.org/tumbleweed/repo/#{flavour}"
+    elsif distribution.start_with?('leap')
+      release = distribution[/\d.*/]
+      baseurl = "https://download.opensuse.org/distribution/leap/#{release}/repo/#{flavour}"
+    else
+      return Nokogiri::XML('<?xml version="1.0" encoding="UTF-8"?><components origin="appdata" version="0.8"></components>')
+    end
+
+    repomd_url = "#{baseurl}/repodata/repomd.xml"
+    href = Appdata.href_from_repomd(repomd_url)
+    appdata_url = "#{baseurl}/#{href}"
+
     begin
       Nokogiri::XML(Zlib::GzipReader.new(open(appdata_url, allow_redirections: :all)))
     rescue StandardError => e
@@ -55,5 +58,11 @@ class Appdata
       Rails.logger.error "Can't retrieve appdata from: '#{appdata_url}'"
       Nokogiri::XML('<?xml version="1.0" encoding="UTF-8"?><components origin="appdata" version="0.8"></components>')
     end
+  end
+
+  def self.href_from_repomd(url)
+    repomd = Nokogiri::XML(open(url))
+    repomd.remove_namespaces!
+    repomd.xpath('/repomd/data[@type="appdata"]/location').attr('href').text
   end
 end
