@@ -169,7 +169,7 @@ Windows.
 1.  Start the app:
 
     ```
-    rails server
+    bin/rails server
     ```
 
 1.  Enjoy your software.opensuse.org clone at http://127.0.0.1:3000/
