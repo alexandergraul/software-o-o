@@ -74,7 +74,7 @@ class OBSController < ApplicationController
     end
 
     unless @search_debug
-      @packages.reject! { |p| p.name.end_with?('-buildsymbols', '-debuginfo', '-debugsource') }
+      @packages.reject! { |p| p.name.end_with?('-buildsymbols', '-debuginfo', '-debugsource') || p.name.include?('-dbgsym') }
     end
 
     # filter out ports for different arch
