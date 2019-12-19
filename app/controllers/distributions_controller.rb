@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class DistributionsController < OBSController
-  before_action :set_releases_parameters, only: %i[index testing leap legacy]
 
   # GET /distributions
   def index

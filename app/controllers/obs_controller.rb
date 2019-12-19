@@ -8,6 +8,7 @@ class OBSError < StandardError; end
 class OBSController < ApplicationController
   before_action :set_distributions
   before_action :set_releases_parameters
+  # depends on releases
   before_action :set_baseproject
 
   private
