@@ -43,6 +43,8 @@ group :development do
   # no need to load the gem via require
   # we only need the rake tasks
   gem 'gettext', '>= 1.9.3', require: false
+  gem 'rspec'
+  gem 'rspec-rails'
   gem 'solargraph'
   gem 'web-console'
 end
@@ -60,6 +62,7 @@ group :test do
   gem 'geckodriver-helper', git: 'https://github.com/bragboy/geckodriver-helper'
   gem 'rubocop'
   gem 'rubocop-performance'
+  gem 'rubocop-rspec'
   gem 'selenium-webdriver'
   gem 'vcr'
   gem 'webmock'
